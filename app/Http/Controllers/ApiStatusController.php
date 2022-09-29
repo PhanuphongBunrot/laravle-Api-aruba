@@ -86,9 +86,9 @@ class ApiStatusController extends Controller
         }
        
 
-         echo "<pre>";
-         print_r($mac_ap1);
-         echo"</pre>";
+        //  echo "<pre>";
+        //  print_r($mac_ap1);
+        //  echo"</pre>";
 
          for ($xl = 0 ;$xl <count($mac_ap1); $xl++){
             $mac_ap[] = $mac_ap1[$xl]["Max"];
@@ -124,7 +124,7 @@ class ApiStatusController extends Controller
             
 
 
-            echo ($offline[$g] . " " . $ip_db[$g]['Apname'] . " Offline" . " " . $d . "/" . $m . "/" . $Y . " " . $h . ":" . $min  . " ");
+            echo ($offline[$g] . " " . $ip_db[$g]['Apname'] . " Offline" . " " . $d . "/" . $m . "/" . $Y . " " . $h . ":" . $min  . " "."t"." ");
         }
     }
     
