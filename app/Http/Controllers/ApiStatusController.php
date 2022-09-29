@@ -114,18 +114,18 @@ class ApiStatusController extends Controller
         }
 
 
-        $f = 0;
+        // $f = 0;
 
-        $offline = array_diff($arr_ip, $mac_ap);
+        // $offline = array_diff($arr_ip, $mac_ap);
 
-        $offline = array_values($offline);
-        for ($g = 0; $g < count($offline); $g++) {
-            $f = $f + 1;
+        // $offline = array_values($offline);
+        // for ($g = 0; $g < count($offline); $g++) {
+        //     $f = $f + 1;
             
 
 
-            echo ($offline[$g] . " " . $ip_db[$g]['Apname'] . " Offline" . " " . $d . "/" . $m . "/" . $Y . " " . $h . ":" . $min  . " ".$mac_ap1[$k]["ipap"]." " );
-        }
+        //     echo ($offline[$g] . " " . $ip_db[$g]['Apname'] . " Offline" . " " . $d . "/" . $m . "/" . $Y . " " . $h . ":" . $min  . " ".$mac_ap1[$k]["ipap"]." " );
+        // }
     }
     
 }
