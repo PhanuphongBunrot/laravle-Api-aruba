@@ -16,7 +16,14 @@ class ApiStatusController extends Controller
     {
         error_reporting(E_ALL ^ E_NOTICE);
 
-       
+        $conn =  new Mongo;
+        $companydb  = $conn->iparuba;
+        $add_db = $companydb->ipaps;
+
+        $conn =  new Mongo;
+        $companydb  = $conn->iparuba;
+        $up_master = $companydb->ipmaster;
+
         $mon = new Mongo;
         $conn = $mon->iparuba->ipmaster;
         $data = $conn->find()->toArray();
@@ -25,9 +32,9 @@ class ApiStatusController extends Controller
         $conn = $mon->iparuba->ipaps;
         $ip_db = $conn->find()->toArray();
 
-      
 
-     
+
+
         $o = 0;
         $t = date_default_timezone_set('Asia/Bangkok');
         $t = date('Y-m-d H:i:s');
@@ -42,7 +49,20 @@ class ApiStatusController extends Controller
 
             $ip = $data[$r]['ip'];
 
-            
+            $updateResult = $up_master->replaceOne(
+                ['ip' => $data[$r]['ip']],
+                [
+                    'ip' => $data[$r]['ip'],
+                    'address' => $data[$r]['address'],
+                    'Longitude' => $data[$r]['Longitude'],
+                    'Latitude' => $data[$r]['Latitude'],
+                    'Serial' => $data[$r]['Serial'],
+                    'Status' => 'Online',
+                    'd/m/y' => $d . "/" . $m . "/" . $Y,
+                    'time' => $h . ":" . $min,
+                ]
+
+            );
 
             try {
                 $resp = Http::timeout(5)->withHeaders([
@@ -74,43 +94,81 @@ class ApiStatusController extends Controller
                         $keywords[0] = null;
                     } else if ($keywords[0] != null) {
                         //echo ("/".$keywords[0]);
-                        $mac_ap1[] = [  'Max'=>$keywords[0],
-                                    'ipap'=>$keywords[1]
-                        ] ;
-                        
+                        //$mac_ap[] = $keywords[0];
+                        $mac_ap1[] = [
+                            'Max' => $keywords[0],
+                            'ipap' => $keywords[1]
+                        ];
                     }
                 }
             } catch (\Illuminate\Http\Client\ConnectionException $e) {
-               
+                $updateResult = $up_master->replaceOne(
+                    ['ip' => $data[$r]['ip']],
+                    [
+                        'ip' => $data[$r]['ip'],
+                        'address' => $data[$r]['address'],
+                        'Longitude' => $data[$r]['Longitude'],
+                        'Latitude' => $data[$r]['Latitude'],
+                        'Serial' => $data[$r]['Serial'],
+                        'Status' => 'Offline',
+                        'd/m/y' => $d . "/" . $m . "/" . $Y,
+                        'time' => $h . ":" . $min,
+                    ]
+                );
             }
         }
-       
-
-        //  echo "<pre>";
-        //  print_r($mac_ap1);
-        //  echo"</pre>";
-
-         for ($xl = 0 ;$xl <count($mac_ap1); $xl++){
+        for ($xl = 0; $xl < count($mac_ap1); $xl++) {
             $mac_ap[] = $mac_ap1[$xl]["Max"];
-         }
+        }
+        if (count($ip_db) == 0) {
+            for ($i = 0; $i < count($mac_ap); $i++) {
+                $inser = $add_db->insertMany([
+                    [
+                        'Max' => $mac_ap[$i],
+                        'Apname' => 'ArubaAP',
+                        'S/N' => '--',
+                        'ip' => $mac_ap1[$i]["ipap"]
+                        
 
-         
-       
+                    ]
+
+                ]);
+            }
+        }
         for ($l = 0; $l < count($ip_db); $l++) {
             $arr_ip[] = $ip_db[$l]['Max'];
         }
+        if ($arr_ip != null) {
+            $re = array_diff($mac_ap, $arr_ip);
+        }
 
-        $re = array_diff($mac_ap, $arr_ip);
+        for ($x = 0; $x < count($mac_ap); $x++) {
+
+            if ($re[$x] != null) {
+                $inser = $add_db->insertMany([
+                    [
+                        'Max' => $re[$x],
+                        'Apname' => 'ArubaAP',
+                        'S/N' => '--',
+                        'ip' => $mac_ap1[$x]["ipap"]
+                        
+                    ]
 
 
+                ]);
+            }
+        }
 
 
         $online = array_intersect($arr_ip, $mac_ap);
-        $online = array_values($online);
-        for ($k = 0; $k < count($online); $k++) {
+
+        for ($k = 0; $k < count($ip_db); $k++) {
             $o = $o + 1;
-            
-            echo ($online[$k] . " " . $ip_db[$k]['Apname'] . " Online" . " " . $d . "/" . $m . "/" . $Y . " " . $h . ":" . $min  . " " .$mac_ap1[$k]["ipap"]." ");
+            if ($online[$k] != null) {
+
+                echo ($online[$k] . " " . $ip_db[$k]['Apname'] . " Online" . " " . $d . "/" . $m . "/" . $Y . " " . $h . ":" . $min  . " " . $ip_db[$k]["ip"] . " ");
+                //echo ($online[$k] . " " . $ip_db[$k]['Apname'] . " Online" . " " . $d . "/" . $m . "/" . $Y . " " . $h . ":" . $min  . " " );
+            }
         }
 
 
@@ -118,14 +176,16 @@ class ApiStatusController extends Controller
 
         $offline = array_diff($arr_ip, $mac_ap);
 
-        $offline = array_values($offline);
-        for ($g = 0; $g < count($offline); $g++) {
+
+        for ($g = 0; $g < count($ip_db); $g++) {
             $f = $f + 1;
-            
 
+            if ($offline[$g] != null) {
+               
+             echo ($offline[$g] . " " . $ip_db[$g]['Apname'] . " Offline" . " " . $d . "/" . $m . "/" . $Y . " " . $h . ":" . $min  . " " . $ip_db[$g]["ip"] . " ");
+            }
 
-            echo ($offline[$g] . " " . $ip_db[$g]['Apname'] . " Offline" . " " . $d . "/" . $m . "/" . $Y . " " . $h . ":" . $min  . " "."t"." ");
+            //echo ($offline[$g] . " " . $ip_db[$g]['Apname'] . " Offline" . " " . $d . "/" . $m . "/" . $Y . " " . $h . ":" . $min  . " " );
         }
     }
-    
 }
