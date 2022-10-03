@@ -36,11 +36,11 @@ class CheckipController extends Controller
                         'user' => 'admin',
                         'passwd' => 'ssit1234'
                     ]);
-                 echo $ip ."Online";
+                 echo $ip ."Online"."<br>";
 
                
             } catch (\Illuminate\Http\Client\ConnectionException $e) {
-                echo $ip." offline";
+                echo $ip." offline"."<br>";
             }
         }
      }

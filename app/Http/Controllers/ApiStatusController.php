@@ -167,7 +167,7 @@ class ApiStatusController extends Controller
             if ($online[$k] != null) {
 
                 echo ($online[$k] . " " . $ip_db[$k]['Apname'] . " Online" . " " . $d . "/" . $m . "/" . $Y . " " . $h . ":" . $min  . " " . $ip_db[$k]["ip"] . " ");
-                //echo ($online[$k] . " " . $ip_db[$k]['Apname'] . " Online" . " " . $d . "/" . $m . "/" . $Y . " " . $h . ":" . $min  . " " );
+              
             }
         }
 
@@ -185,7 +185,7 @@ class ApiStatusController extends Controller
              echo ($offline[$g] . " " . $ip_db[$g]['Apname'] . " Offline" . " " . $d . "/" . $m . "/" . $Y . " " . $h . ":" . $min  . " " . $ip_db[$g]["ip"] . " ");
             }
 
-            //echo ($offline[$g] . " " . $ip_db[$g]['Apname'] . " Offline" . " " . $d . "/" . $m . "/" . $Y . " " . $h . ":" . $min  . " " );
+           
         }
     }
 }
