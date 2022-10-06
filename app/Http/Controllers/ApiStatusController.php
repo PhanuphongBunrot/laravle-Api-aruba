@@ -126,7 +126,7 @@ class ApiStatusController extends Controller
                     [
                         'Max' => $mac_ap[$i],
                         'Apname' => 'ArubaAP',
-                        'S/N' => '--',
+                        'S/N' => '-',
                         'ip' => $mac_ap1[$i]["ipap"]
                         
 
@@ -149,7 +149,7 @@ class ApiStatusController extends Controller
                     [
                         'Max' => $re[$x],
                         'Apname' => 'ArubaAP',
-                        'S/N' => '--',
+                        'S/N' => '-',
                         'ip' => $mac_ap1[$x]["ipap"]
                         
                     ]
