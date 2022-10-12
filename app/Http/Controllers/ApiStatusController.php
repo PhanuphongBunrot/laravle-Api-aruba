@@ -32,6 +32,10 @@ class ApiStatusController extends Controller
         $conn = $mon->iparuba->ipaps;
         $ip_db = $conn->find()->toArray();
 
+        $conn =  new Mongo;
+        $companydb  = $conn->iparuba;
+        $add_offline = $companydb->offline;
+
 
 
 
@@ -65,7 +69,7 @@ class ApiStatusController extends Controller
             );
 
             try {
-                $resp = Http::timeout(5)->withHeaders([
+                $resp = Http::timeout(3)->withHeaders([
                     'Content-Type' => 'application/json;charset=UTF-8'
                 ])
                     ->withOptions(["verify" => false])
@@ -128,7 +132,7 @@ class ApiStatusController extends Controller
                         'Apname' => 'ArubaAP',
                         'S/N' => '-',
                         'ip' => $mac_ap1[$i]["ipap"]
-                        
+
 
                     ]
 
@@ -151,7 +155,7 @@ class ApiStatusController extends Controller
                         'Apname' => 'ArubaAP',
                         'S/N' => '-',
                         'ip' => $mac_ap1[$x]["ipap"]
-                        
+
                     ]
 
 
@@ -166,8 +170,7 @@ class ApiStatusController extends Controller
             $o = $o + 1;
             if ($online[$k] != null) {
 
-                echo ($online[$k] . " " . $ip_db[$k]['Apname'] . " Online" . " " . $d . "/" . $m . "/" . $Y . " " . $h . ":" . $min  . " " . $ip_db[$k]["ip"] . " ");
-              
+                echo ($online[$k] . " " . $ip_db[$k]['Apname'] . " Online" . " " . $Y . "-" . $m . "-" . $d . " " . $h . ":" . $min  . " " . $ip_db[$k]["ip"] . " ");
             }
         }
 
@@ -181,11 +184,17 @@ class ApiStatusController extends Controller
             $f = $f + 1;
 
             if ($offline[$g] != null) {
-               
-             echo ($offline[$g] . " " . $ip_db[$g]['Apname'] . " Offline" . " " . $d . "/" . $m . "/" . $Y . " " . $h . ":" . $min  . " " . $ip_db[$g]["ip"] . " ");
-            }
+                $inser = $add_offline->insertMany([
+                    [
+                        "Max" => $offline[$g],
+                        "Time" =>  $Y . "-" . $m . "-" . $d." ". $h . ":" . $min  ,
 
-           
+                    ]
+
+                ]);
+
+                echo ($offline[$g] . " " . $ip_db[$g]['Apname'] . " Offline" . " " . $Y . "-" . $m . "-" . $d . " " . $h . ":" . $min  . " " . $ip_db[$g]["ip"] . " ");
+            }
         }
     }
 }
