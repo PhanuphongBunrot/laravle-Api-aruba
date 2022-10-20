@@ -37,3 +37,4 @@ Route::get('ping',[PingController::class,'ping']);
 Route::get('ipgroup',[IPgroupController::class,'ipgroup']);
 Route::get('check',[CheckipController::class,'Ckeck']);
 Route::get('drop',[dropController::class,'drop']);
+Route::get('search',[UpdataMBController::class,'updata']);
