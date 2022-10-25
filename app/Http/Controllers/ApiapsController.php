@@ -28,7 +28,9 @@ class ApiapsController extends Controller
                 ])
                     ->withOptions(["verify" => false])
                     ->get('https://admin:admin@192.168.207.5/rest/system/resource');
-                      $data  = json_decode($response,true) ;
+                      
+                    
+                    $data  = json_decode($response,true) ;
                     echo ($data['build-time']);
                
               

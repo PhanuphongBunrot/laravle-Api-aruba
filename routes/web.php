@@ -5,6 +5,8 @@ use App\Http\Controllers\PingController;
 use App\Http\Controllers\ApiStatusController;
 use App\Http\Controllers\StatusController;
 use App\Http\Controllers\TestipController;
+use App\Http\Controllers\UpdataMBController;
+use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -24,5 +26,5 @@ Route::get('/', function () {
 Route::get('status',[StatusController::class,'status']);
 Route::get('info',[InfoController::class,'info']);
 Route::get('test',[TestipController::class,'test']);
-
+Route::get('search',[UpdataMBController::class,'updata']);
 
